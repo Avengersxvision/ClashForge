@@ -44,21 +44,6 @@ An unofficial, mobile-first Clash of Clans fan toolkit built for fast, no-login 
 
 ```
 
-## Connecting the Clash of Clans API (Vercel Setup)
-
-Supercell locks Clash of Clans API keys to specific IP addresses. Because Vercel serverless functions use dynamic IPs, using a static-IP proxy is recommended.
-
-1. Sign in to the [Clash of Clans Developer Portal](https://www.google.com/search?q=https%3A%2F%2Fdeveloper.clashofclans.com%2F), open **My Account**, and click **Create New Key**.
-
-2. In **Allowed IP Addresses**, add `45.79.218.79` (RoyaleAPI's free static proxy IP) and copy your generated API token.
-
-3. In Vercel under **Settings > Environment Variables**, add:
-
-   * `coc_api` = your Clash of Clans API token
-
-   * `COC_PROXY_URL` = `https://cocproxy.royaleapi.dev/v1`
-
-4. Redeploy your Vercel project.
 
 ## Disclaimer
 
