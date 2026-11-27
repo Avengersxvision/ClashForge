@@ -1,92 +1,49 @@
-# Clash-Force-2
-# ⚔ ClashForge — Clash of Clans Fan Toolkit
+# ClashForge
 
-> **Unofficial fan resource. Not affiliated with Supercell.**
+An unofficial, mobile-first Clash of Clans fan toolkit built for fast, no-login upgrade planning. Enter your Player Tag once to auto-fill your Town Hall, Hero levels, and Hero Equipment across calculators and guides.
 
-A free, no-login Clash of Clans toolkit built for chiefs at every Town Hall level. Calculate, plan, and dominate — all in one place.
+## Core Tools (7)
 
-🌐 **Live site:** [clashforce.vercel.app](https://clashforce.vercel.app)
+### Calculators
+- **Build Timer**: Speed boost calculator with remaining booster tracking.
+- **Hero Tracker**: Dark Elixir and Elixir cost calculator to max any hero for your Town Hall (TH7 to TH18).
+- **Equip & Ores**: Shiny, Glowy, and Starry Ore calculator for Hero Equipment levels.
+- **Wall Calc**: Total Gold or Elixir needed to max every wall at your Town Hall.
+- **Gem Calc**: Exact gem cost to finish any active build or lab timer.
+- **Farming Calc**: Estimate how many raids you need to fund your next upgrade.
 
----
+### Guides
+- **Base Maxing Guide**: Priority upgrade checklist per Town Hall aligned to Chief's Journey.
 
-## 🛠️ Tools
+## Key Features
+- **1-Tap Player Tag Sync**: Connects through `/api/player?tag=...` (tag only, no password or Supercell ID login) and saves your tag in a browser cookie for instant auto-fill on return visits.
+- **Mobile-First Navigation**: Compact top bar with ClashForge logo, slide-down drawer menu, and sticky thumb-friendly bottom navigation bar for phones, plus a responsive desktop layout.
+- **Server-Side API Security**: Your Clash of Clans API key stays inside Vercel environment variables and is never exposed in client-side HTML.
 
-| Tool | Description |
-|------|-------------|
-| ⏱ Build Timer | Speed boost calculator with booster time tracking |
-| 🦸 Hero Tracker | Cost to max any hero at your TH level |
-| 💰 Farming Calc | How many raids to fund your next upgrade |
-| ⚔ War Weight | Redesigned war weight calculator with category breakdown |
-| 🏰 Base Maxing Guide | Priority upgrade list for every TH aligned to Chief's Journey |
-| ⚒️ Equip & Ores | Ore cost calculator for all Hero Equipment upgrades |
-| 💎 Gem Calculator | Gems needed to skip any build timer |
-| 🧱 Wall Calculator | Gold/Elixir to max all walls at your TH |
-| 🏆 Base Strength Score | 0–100 strength score with Chief rank |
-| 🗺️ Upgrade Roadmap | Week-by-week upgrade priority plan per TH |
-| ⚖️ Loot Efficiency | Compare army training cost vs loot return |
-| 🪪 Progress Card | Shareable hero progress card (screenshot ready) |
-| 🚨 Rush Detector | Check if your base is rushed vs your TH level |
-| ⏳ Time to Max | Estimate remaining time to max your TH |
-| 🔍 Player Lookup | Live player data via CoC API (tag only, no login) |
+## Project Structure
 
----
-
-## 📁 Project Structure
-
-```
-clashforge/
-├── index.html        # Main single-page app (all tools)
+```text
+.
+├── index.html                    # Complete single-page app (UI, 7 tools, blog, cookie tag sync)
+├── favicon.png                   # ClashForge browser favicon
 ├── api/
-│   └── player.js     # Vercel serverless function — CoC API proxy
-├── ads.txt           # AdSense verification
-└── README.md
+│   └── player.js                 # Vercel serverless proxy for the official Clash of Clans API
+├── ads.txt                       # Google AdSense verification
+├── package.json                  # ES module config for Vercel serverless functions
+└── googlebfdcd7435323eb9e.html   # Google Search Console verification
 ```
 
----
+## Connecting the Clash of Clans API (Vercel Setup)
 
-## 🚀 Deployment
+Supercell locks Clash of Clans API keys to specific IP addresses. Because Vercel serverless functions use dynamic IPs, using a static-IP proxy is recommended.
 
-This project is deployed on **Vercel**. Every push to `main` auto-deploys to production.
+1. Sign in to the [Clash of Clans Developer Portal](https://developer.clashofclans.com/), open **My Account**, and click **Create New Key**.
+2. In **Allowed IP Addresses**, add `45.79.218.79` (RoyaleAPI's free static proxy IP) and copy your generated API token.
+3. In Vercel under **Settings > Environment Variables**, add:
+   - `coc_api` = your Clash of Clans API token
+   - `COC_PROXY_URL` = `https://cocproxy.royaleapi.dev/v1`
+4. Redeploy your Vercel project.
 
-### Environment Variables
+## Disclaimer
 
-Set this in your Vercel project dashboard under **Settings → Environment Variables**:
-
-| Variable | Description |
-|----------|-------------|
-| `coc_api` | Your Clash of Clans API key from [developer.clashofclans.com](https://developer.clashofclans.com) |
-
-> ⚠️ The CoC API key must be whitelisted to your Vercel server's IP. The `/api/player.js` function acts as a proxy so users never see your key.
-
-### How the API works
-
-```
-User enters player tag
-        ↓
-/api/player?tag=ABC123  (Vercel serverless function)
-        ↓ (uses coc_api env variable — hidden from users)
-api.clashofclans.com
-        ↓
-Player data → auto-fills Progress Card, Rush Detector, Time to Max
-```
-
----
-
-## ⚖️ Legal
-
-ClashForge is an **unofficial fan resource** and is not affiliated with, endorsed by, or connected to **Supercell Oy** in any way.
-
-Clash of Clans™ is a trademark of Supercell. All game content, names, and imagery belong to their respective owners.
-
-All calculated values are community-based estimates and may vary in-game.
-
----
-
-## 📬 Contact & Support
-
-- **Ko-fi:** [ko-fi.com/clashforge](https://ko-fi.com/clashforge)
-- **Bug reports / suggestions:** Use the Support page on the site
-
----
-
-*Built with ❤️ by a fellow chief.*
+ClashForge is an unofficial fan toolkit and is not affiliated with, endorsed by, sponsored by, or specifically approved by Supercell Oy. Clash of Clans is a trademark of Supercell Oy. Calculated values are community-based estimates and may vary in-game.
