@@ -1042,7 +1042,7 @@ select{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500
   padding:18px 14px;background:var(--bg);border:1px solid var(--border);border-radius:12px;
 }
 .prof-th-emblem{
-  width:84px;height:84px;border-radius:16px;
+  width:112px;height:112px;border-radius:16px;
   background:rgba(229,169,59,.09);border:1px solid rgba(229,169,59,.28);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   margin-bottom:10px;
@@ -1059,7 +1059,7 @@ select{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500
   display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:8px;
 }
 .prof-unit-tile{
-  position:relative;aspect-ratio:1 / 1;border-radius:10px;
+  position:relative;aspect-ratio:1 / 1;border-radius:10px;color:var(--text2);
   background:var(--bg);border:1px solid var(--border);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   overflow:hidden;cursor:pointer;padding:4px;
@@ -1802,7 +1802,7 @@ select{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500
           <div class="prof-col">
             <div class="prof-panel">
               <div class="prof-th-box">
-                <div class="prof-th-emblem" id="prof-th-emblem"><img id="prof-th-img" class="prof-th-img" alt="Town Hall" style="display:none;width:72px;height:72px;object-fit:contain"><span id="prof-th-lbl">TOWN HALL</span><strong id="prof-th-num">19</strong></div>
+                <div class="prof-th-emblem" id="prof-th-emblem"><img id="prof-th-img" class="prof-th-img" alt="Town Hall" style="display:none;width:96px;height:96px;object-fit:contain"><span id="prof-th-lbl">TOWN HALL</span><strong id="prof-th-num">19</strong></div>
                 <div class="prof-th-sub" id="prof-th-weapon">Home Village</div>
                 <div class="prof-prog-wrap">
                   <div class="prof-prog-meta"><span>Units Maxed</span><span id="prof-max-ratio">0 / 0</span></div>
@@ -1852,7 +1852,7 @@ select{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500
           <div class="prof-col">
             <div class="prof-panel">
               <div class="prof-th-box">
-                <div class="prof-th-emblem" id="prof-bh-emblem"><img id="prof-bh-img" class="prof-th-img" alt="Builder Hall" style="display:none;width:72px;height:72px;object-fit:contain"><span id="prof-bh-lbl">BUILDER HALL</span><strong id="prof-bh-num">--</strong></div>
+                <div class="prof-th-emblem" id="prof-bh-emblem"><img id="prof-bh-img" class="prof-th-img" alt="Builder Hall" style="display:none;width:96px;height:96px;object-fit:contain"><span id="prof-bh-lbl">BUILDER HALL</span><strong id="prof-bh-num">--</strong></div>
                 <div class="prof-th-sub" id="prof-bh-trophies">Builder Base Trophies: --</div>
               </div>
             </div>
@@ -3664,15 +3664,34 @@ function profAbbr(name){
 
 const COC_CDN_BASE = 'https://cdn.jsdelivr.net/npm/clash-of-clans-data@latest';
 const COC_MANIFEST_URL = 'https://data.jsdelivr.com/v1/packages/npm/clash-of-clans-data@latest?structure=flat';
-const COC_ICON_CACHE_KEY = 'cf_coc_icon_map_v1';
+const COC_ICON_CACHE_KEY = 'cf_coc_icon_map_v2';
 window.cfIconMap = null;
+
+const PROF_NAME_ALIASES = {
+  'powerpekka': ['superpekka', 'powerpekka'],
+  'pekka': ['pekka', 'p.e.k.k.a'],
+  'spikyball': ['spikyball', 'spkyball'],
+  'battlemachine': ['battlemachine'],
+  'battlecopter': ['battlecopter'],
+  'lassi': ['lassi'],
+  'hogglider': ['hogglider'],
+  'electrofirewizard': ['electrofirewizard'],
+  'sneakyarcher': ['sneakyarcher'],
+  'ragedbarbarian': ['ragedbarbarian'],
+  'boxergiant': ['boxergiant'],
+  'betaminion': ['betaminion'],
+  'cannoncart': ['cannoncart'],
+  'nightwitch': ['nightwitch'],
+  'dropship': ['dropship'],
+  'babydragon': ['babydragon']
+};
 
 function profNorm(s){
   return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
 function profBuildIconMapFromFiles(files){
-  const map = { home: {}, builder: {}, th: {}, bh: {} };
+  const map = { home: {}, builder: {}, any: {}, th: {}, bh: {} };
   const scoreFile = (name) => {
     const low = name.toLowerCase();
     if (low.includes('icon')) return 1000;
@@ -3681,35 +3700,70 @@ function profBuildIconMapFromFiles(files){
     const m = low.match(/level[-_]?(\d+)/);
     return m ? (500 + parseInt(m[1], 10)) : 100;
   };
-  const bestScores = { home: {}, builder: {} };
+  const bestScores = { home: {}, builder: {}, any: {}, th: {}, bh: {} };
 
   for (const f of files) {
     const p = f && f.name ? String(f.name) : '';
     if (!p.startsWith('/images/') || !/\.(png|webp)$/i.test(p)) continue;
-    const parts = p.split('/').filter(Boolean); // ['images', base, category, slug, ...]
-    if (parts.length < 4) continue;
-    const base = parts[1]; // 'home' or 'builder'
-    const cat = parts[2];
-    const slug = parts[3];
+    const low = p.toLowerCase();
+    const parts = p.split('/').filter(Boolean); // ['images', base, category, ...]
+    if (parts.length < 3) continue;
 
-    if (base === 'home' && cat.includes('town-hall')) {
-      const m = p.match(/level[-_]?(\d+)/i);
-      if (m) map.th[m[1]] = COC_CDN_BASE + p;
+    // 1. Accurate Town Hall level 1..19 matching at any folder depth
+    if (low.includes('town-hall') || low.includes('town_hall') || low.includes('/townhall/')) {
+      const m = low.match(/level[-_]?(\d+)/);
+      if (m) {
+        const lv = m[1];
+        // Prefer normal or highest weapon star for TH12-16
+        let sc = 100;
+        if (low.includes('normal')) sc += 50;
+        const star = low.match(/level[-_]?\d+[-_](\d+)/);
+        if (star) sc += parseInt(star[1], 10) * 10;
+        if (!bestScores.th[lv] || sc > bestScores.th[lv]) {
+          bestScores.th[lv] = sc;
+          map.th[lv] = COC_CDN_BASE + p;
+        }
+      }
       continue;
     }
-    if (base === 'builder' && cat.includes('builder-hall')) {
-      const m = p.match(/level[-_]?(\d+)/i);
-      if (m) map.bh[m[1]] = COC_CDN_BASE + p;
+
+    // 2. Accurate Builder Hall level 1..10 matching at any folder depth
+    if (low.includes('builder-hall') || low.includes('builder_hall') || low.includes('/builderhall/')) {
+      const m = low.match(/level[-_]?(\d+)/);
+      if (m) {
+        const lv = m[1];
+        const sc = low.includes('normal') ? 150 : 100;
+        if (!bestScores.bh[lv] || sc > bestScores.bh[lv]) {
+          bestScores.bh[lv] = sc;
+          map.bh[lv] = COC_CDN_BASE + p;
+        }
+      }
       continue;
     }
 
-    if (base !== 'home' && base !== 'builder') continue;
-    const key = profNorm(slug.replace(/\.(png|webp)$/i, ''));
-    if (!key) continue;
+    const baseRaw = parts[1].toLowerCase();
+    const base = baseRaw.startsWith('builder') ? 'builder' : (baseRaw.startsWith('home') ? 'home' : null);
+    if (!base) continue;
+
+    // Candidate keys: folder slug (parts[3]) and filename stem if directly inside category
+    const candidates = [];
+    if (parts.length >= 4) candidates.push(profNorm(parts[3].replace(/\.(png|webp)$/i, '')));
+    const lastSeg = profNorm(parts[parts.length - 1].replace(/\.(png|webp)$/i, ''));
+    if (lastSeg && !/^level\d+/.test(lastSeg) && lastSeg !== 'icon' && lastSeg !== 'normal') {
+      candidates.push(lastSeg);
+    }
+
     const sc = scoreFile(p);
-    if (!bestScores[base][key] || sc > bestScores[base][key]) {
-      bestScores[base][key] = sc;
-      map[base][key] = COC_CDN_BASE + p;
+    for (const key of candidates) {
+      if (!key) continue;
+      if (!bestScores[base][key] || sc > bestScores[base][key]) {
+        bestScores[base][key] = sc;
+        map[base][key] = COC_CDN_BASE + p;
+      }
+      if (!bestScores.any[key] || sc > bestScores.any[key]) {
+        bestScores.any[key] = sc;
+        map.any[key] = COC_CDN_BASE + p;
+      }
     }
   }
   return map;
@@ -3718,7 +3772,7 @@ function profBuildIconMapFromFiles(files){
 async function loadCocIconManifest(){
   try {
     const cached = JSON.parse(localStorage.getItem(COC_ICON_CACHE_KEY) || 'null');
-    if (cached && cached.ts && (Date.now() - cached.ts) < 86400000 && cached.map) {
+    if (cached && cached.ts && (Date.now() - cached.ts) < 86400000 && cached.map && Object.keys(cached.map.th || {}).length > 0) {
       window.cfIconMap = cached.map;
       return cached.map;
     }
@@ -3742,24 +3796,30 @@ async function loadCocIconManifest(){
 function profIconUrl(name, kind){
   const norm = profNorm(name);
   const map = window.cfIconMap;
+  const aliases = PROF_NAME_ALIASES[norm] || [norm];
 
-  // 1. Exact verified match from clash-of-clans-data jsDelivr manifest
+  // 1. Exact or alias match from verified jsDelivr clash-of-clans-data manifest
   if (map) {
     const bucket = kind === 'builder' ? map.builder : map.home;
-    if (bucket[norm]) return bucket[norm];
-    // Handle minor naming aliases (e.g. "P.E.K.K.A" vs "pekka", "L.A.S.S.I" vs "lassi", "Spell" suffix)
-    const noSpell = norm.replace(/spell$/, '');
-    if (bucket[noSpell]) return bucket[noSpell];
-    if (bucket[norm + 'spell']) return bucket[norm + 'spell'];
-    // Prefix/contains fallback inside same village bucket
-    const fuzzy = Object.keys(bucket).find(k => k === norm || (k.length > 4 && (k.includes(norm) || norm.includes(k))));
+    for (const k of aliases) {
+      if (bucket[k]) return bucket[k];
+      const noSpell = k.replace(/spell$/, '');
+      if (bucket[noSpell]) return bucket[noSpell];
+      if (bucket[k + 'spell']) return bucket[k + 'spell'];
+    }
+    // Check cross-bucket (e.g. Battle Machine / Power P.E.K.K.A / shared heroes)
+    for (const k of aliases) {
+      if (map.any && map.any[k]) return map.any[k];
+    }
+    // Safe substring match inside same village bucket
+    const fuzzy = Object.keys(bucket).find(k => k.length > 4 && (k.includes(norm) || norm.includes(k)));
     if (fuzzy) return bucket[fuzzy];
   }
 
   // 2. Direct Hero portraits fallback
   if (PROF_HERO_ICONS[name]) return PROF_HERO_ICONS[name];
 
-  // 3. Clean direct jsDelivr fallback path before manifest finishes
+  // 3. Direct jsDelivr fallback path before manifest finishes
   const kebab = String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   if (kind === 'spell') return `${COC_CDN_BASE}/images/home/spells/${kebab}/icon.png`;
   if (kind === 'pet') return `${COC_CDN_BASE}/images/home/pets/${kebab}/icon.png`;
@@ -3849,12 +3909,26 @@ function renderPlayerProfile(player){
   const thImg = document.getElementById('prof-th-img');
   const thLbl = document.getElementById('prof-th-lbl');
   const thNum = document.getElementById('prof-th-num');
-  if (thImg && window.cfIconMap && window.cfIconMap.th && window.cfIconMap.th[String(player.townHallLevel)]) {
-    thImg.src = window.cfIconMap.th[String(player.townHallLevel)];
+  if (thImg && player.townHallLevel) {
+    const thLv = String(player.townHallLevel);
+    const primaryTh = (window.cfIconMap && window.cfIconMap.th && window.cfIconMap.th[thLv])
+      || `${COC_CDN_BASE}/images/home/town-hall/level-${thLv}.png`;
+    const backupTh = `https://assets.clashk.ing/buildings/home-base/town_hall/level_${thLv}.webp`;
+    thImg.dataset.triedBackup = '';
+    thImg.src = primaryTh;
     thImg.style.display = 'block';
     if (thLbl) thLbl.style.display = 'none';
     if (thNum) thNum.style.display = 'none';
-    thImg.onerror = () => { thImg.style.display = 'none'; if (thLbl) thLbl.style.display = ''; if (thNum) thNum.style.display = ''; };
+    thImg.onerror = () => {
+      if (!thImg.dataset.triedBackup) {
+        thImg.dataset.triedBackup = '1';
+        thImg.src = backupTh;
+      } else {
+        thImg.style.display = 'none';
+        if (thLbl) thLbl.style.display = '';
+        if (thNum) thNum.style.display = '';
+      }
+    };
   }
   setTxt('prof-th-weapon', player.townHallWeaponLevel ? `Town Hall ${player.townHallLevel} · Weapon Lv ${player.townHallWeaponLevel}` : `Town Hall ${player.townHallLevel}`);
 
@@ -3891,12 +3965,26 @@ function renderPlayerProfile(player){
   const bhImg = document.getElementById('prof-bh-img');
   const bhLbl = document.getElementById('prof-bh-lbl');
   const bhNum = document.getElementById('prof-bh-num');
-  if (bhImg && player.builderHallLevel && window.cfIconMap && window.cfIconMap.bh && window.cfIconMap.bh[String(player.builderHallLevel)]) {
-    bhImg.src = window.cfIconMap.bh[String(player.builderHallLevel)];
+  if (bhImg && player.builderHallLevel) {
+    const bhLv = String(player.builderHallLevel);
+    const primaryBh = (window.cfIconMap && window.cfIconMap.bh && window.cfIconMap.bh[bhLv])
+      || `${COC_CDN_BASE}/images/builder/builder-hall/level-${bhLv}.png`;
+    const backupBh = `https://assets.clashk.ing/buildings/builder-base/builder_hall/level_${bhLv}.webp`;
+    bhImg.dataset.triedBackup = '';
+    bhImg.src = primaryBh;
     bhImg.style.display = 'block';
     if (bhLbl) bhLbl.style.display = 'none';
     if (bhNum) bhNum.style.display = 'none';
-    bhImg.onerror = () => { bhImg.style.display = 'none'; if (bhLbl) bhLbl.style.display = ''; if (bhNum) bhNum.style.display = ''; };
+    bhImg.onerror = () => {
+      if (!bhImg.dataset.triedBackup) {
+        bhImg.dataset.triedBackup = '1';
+        bhImg.src = backupBh;
+      } else {
+        bhImg.style.display = 'none';
+        if (bhLbl) bhLbl.style.display = '';
+        if (bhNum) bhNum.style.display = '';
+      }
+    };
   }
   setTxt('prof-bh-trophies', `Builder Trophies: ${(player.builderBaseTrophies ?? 0).toLocaleString()} (Best ${(player.bestBuilderBaseTrophies ?? 0).toLocaleString()})`);
   profRenderGrid('prof-grid-bheroes', 'prof-cnt-bheroes', builderHeroes, 'builder');
