@@ -952,6 +952,169 @@ select{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500
   .live-events-grid{grid-template-columns:1fr}
 }
 
+
+/* ── PLAYER PROFILE AREA (IN-GAME VILLAGE OVERVIEW) ── */
+.prof-wrap{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:24px 20px 64px}
+.prof-search-bar{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:12px 14px;margin-bottom:16px;
+}
+.prof-search-input-wrap{
+  flex:1;min-width:200px;display:flex;align-items:center;gap:8px;
+  background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0 12px;height:42px;
+}
+.prof-search-input-wrap:focus-within{border-color:rgba(229,169,59,.5)}
+.prof-hash{font-family:'JetBrains Mono',monospace;color:var(--muted);font-weight:600}
+.prof-search-input{
+  flex:1;background:transparent;border:none;outline:none;color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:.9rem;text-transform:uppercase;
+}
+.prof-search-btn{
+  height:42px;padding:0 18px;border-radius:8px;border:none;cursor:pointer;
+  background:var(--gold);color:#141417;font-weight:600;font-size:.88rem;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:opacity 150ms ease,transform 150ms ease;
+}
+.prof-search-btn:hover{opacity:.92}
+.prof-search-btn:active{transform:scale(.98)}
+.prof-status{font-size:.82rem;color:var(--text2);width:100%;display:none}
+.prof-status.show{display:block}
+.prof-status.err{color:#f87171}
+.prof-status.ok{color:#34d399}
+
+.prof-identity{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:16px 18px;margin-bottom:16px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.prof-id-left{display:flex;align-items:center;gap:14px;min-width:0}
+.prof-clan-badge{
+  width:48px;height:48px;border-radius:12px;background:var(--bg);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;
+  font-family:'Outfit',sans-serif;font-weight:600;color:var(--gold);font-size:1.1rem;
+}
+.prof-clan-badge img{width:40px;height:40px;object-fit:contain}
+.prof-player-name{font-family:'Outfit',sans-serif;font-size:1.35rem;font-weight:600;color:var(--text);line-height:1.2}
+.prof-player-meta{font-size:.82rem;color:var(--text2);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.prof-tag-chip{
+  font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--gold);
+  background:rgba(229,169,59,.10);border:1px solid rgba(229,169,59,.22);
+  padding:2px 7px;border-radius:6px;
+}
+.prof-kpis{display:flex;gap:10px;flex-wrap:wrap}
+.prof-kpi{
+  background:var(--bg);border:1px solid var(--border);border-radius:10px;
+  padding:8px 12px;min-width:86px;
+}
+.prof-kpi-k{font-size:.7rem;color:var(--muted)}
+.prof-kpi-v{font-family:'JetBrains Mono',monospace;font-size:.96rem;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums;margin-top:2px}
+
+.prof-tabs{
+  display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;
+}
+.prof-tab{
+  padding:9px 16px;border-radius:10px;border:1px solid var(--border);
+  background:var(--surface);color:var(--text2);font-size:.86rem;font-weight:500;cursor:pointer;
+  transition:border-color 150ms ease,background-color 150ms ease,color 150ms ease;
+}
+.prof-tab:hover{color:var(--text);border-color:rgba(239,236,230,.18)}
+.prof-tab.active{background:rgba(229,169,59,.14);border-color:rgba(229,169,59,.45);color:var(--gold)}
+
+.prof-pane{display:none}
+.prof-pane.active{display:block;animation:cfPageIn 160ms ease}
+
+.prof-village-grid{
+  display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start;
+}
+.prof-col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.prof-panel{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;
+}
+.prof-panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;
+}
+.prof-panel-title{font-family:'Outfit',sans-serif;font-size:.94rem;font-weight:600;color:var(--text)}
+.prof-panel-count{font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--muted)}
+
+.prof-th-box{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:18px 14px;background:var(--bg);border:1px solid var(--border);border-radius:12px;
+}
+.prof-th-emblem{
+  width:84px;height:84px;border-radius:16px;
+  background:rgba(229,169,59,.09);border:1px solid rgba(229,169,59,.28);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin-bottom:10px;
+}
+.prof-th-emblem span{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted)}
+.prof-th-emblem strong{font-family:'Outfit',sans-serif;font-size:2rem;line-height:1;color:var(--gold)}
+.prof-th-sub{font-size:.82rem;color:var(--text2);margin-top:2px}
+.prof-prog-wrap{width:100%;margin-top:14px;text-align:left}
+.prof-prog-meta{display:flex;justify-content:space-between;font-size:.74rem;color:var(--muted);margin-bottom:5px;font-family:'JetBrains Mono',monospace}
+.prof-prog-bar{height:7px;border-radius:999px;background:rgba(239,236,230,.08);overflow:hidden}
+.prof-prog-fill{height:100%;border-radius:999px;background:var(--gold);transition:width 260ms ease}
+
+.prof-unit-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:8px;
+}
+.prof-unit-tile{
+  position:relative;aspect-ratio:1 / 1;border-radius:10px;
+  background:var(--bg);border:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;cursor:pointer;padding:4px;
+  transition:border-color 140ms ease,transform 140ms ease;
+}
+.prof-unit-tile:hover{border-color:rgba(229,169,59,.45);transform:translateY(-1px)}
+.prof-unit-tile.is-max{border-color:rgba(229,169,59,.35)}
+.prof-unit-tile.is-selected{border-color:var(--gold);box-shadow:0 0 0 2px rgba(229,169,59,.2)}
+.prof-unit-img{
+  width:42px;height:42px;object-fit:contain;pointer-events:none;
+}
+.prof-unit-abbr{
+  font-family:'Outfit',sans-serif;font-size:.82rem;font-weight:600;color:var(--text2);
+  letter-spacing:.02em;display:none;text-align:center;line-height:1.1;
+}
+.prof-unit-abbr.show{display:block}
+.prof-lvl-badge{
+  position:absolute;left:4px;bottom:4px;
+  min-width:20px;height:18px;padding:0 4px;border-radius:5px;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:600;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:rgba(15,15,18,.92);color:var(--text);border:1px solid rgba(239,236,230,.18);
+  font-variant-numeric:tabular-nums;
+}
+.prof-unit-tile.is-max .prof-lvl-badge{
+  background:var(--gold);color:#141417;border-color:var(--gold);
+}
+
+.prof-inspect-bar{
+  background:var(--bg);border:1px solid var(--border);border-radius:10px;
+  padding:10px 14px;margin-bottom:12px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  font-size:.84rem;
+}
+.prof-inspect-name{font-weight:600;color:var(--text)}
+.prof-inspect-lvl{font-family:'JetBrains Mono',monospace;color:var(--gold);font-size:.8rem}
+
+.prof-empty{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:36px 20px;text-align:center;
+}
+.prof-empty h3{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:6px}
+.prof-empty p{font-size:.88rem;color:var(--text2);max-width:440px;margin:0 auto}
+
+.sync-profile-link{
+  background:none;border:none;color:var(--gold);font-size:.78rem;font-weight:500;
+  cursor:pointer;padding:0;text-decoration:none;display:inline-flex;align-items:center;gap:4px;
+}
+.sync-profile-link:hover{text-decoration:underline}
+
+@media (max-width:860px){
+  .prof-village-grid{grid-template-columns:1fr}
+  .prof-wrap{padding:18px 14px 52px}
+}
+
 </style>
 </head>
 <body>
@@ -964,6 +1127,7 @@ select{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500
 
     <div class="nav-links">
       <button class="nav-link active" id="nl-home" onclick="showHome()">Home</button>
+      <button class="nav-link" id="nl-profile" onclick="navGo('profile')">Profile</button>
 
       <div class="nav-dropdown" id="nav-tools-wrap">
         <button class="nav-dropdown-btn" id="nav-tools-btn" onclick="toggleToolsMenu()">
@@ -1062,6 +1226,7 @@ select{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500
 
       <div class="sync-helper-row">
         <span class="sync-hint-text">Auto-fills TH, Heroes &amp; Equipment</span>
+        <button type="button" class="sync-profile-link" onclick="navGo('profile')">View full profile →</button>
       </div>
 
       <div class="sync-status" id="cf-sync-status" role="status" aria-live="polite"></div>
@@ -1577,6 +1742,146 @@ select{font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:500
     </div>
   </div>
 </div>
+</div>
+
+<!-- ══════════ PLAYER PROFILE (IN-GAME VILLAGE OVERVIEW) ══════════ -->
+<div id="page-profile" class="tool-page">
+  <div class="prof-wrap">
+    <div class="page-header">
+      <button type="button" class="back-btn" onclick="showHome()">← Back</button>
+      <span class="page-title"><svg class="cf-ico" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Player Profile</span>
+    </div>
+
+    <form class="prof-search-bar" onsubmit="event.preventDefault();profFetchFromInput()">
+      <div class="prof-search-input-wrap">
+        <span class="prof-hash">#</span>
+        <input type="text" class="prof-search-input" id="prof-tag-input" placeholder="Enter player tag, e.g. 2PP" autocomplete="off" spellcheck="false" maxlength="16">
+      </div>
+      <button type="submit" class="prof-search-btn" id="prof-fetch-btn">Load Profile</button>
+      <div class="prof-status" id="prof-status" role="status" aria-live="polite"></div>
+    </form>
+
+    <div id="prof-empty-state" class="prof-empty">
+      <h3>Sync your player tag to view your full village</h3>
+      <p>Enter your Clash of Clans tag above (or from the home page) to see every Hero, Pet, Troop, Spell, Siege Machine, Hero Equipment, and Builder Base level in one place.</p>
+    </div>
+
+    <div id="prof-content" style="display:none">
+      <div class="prof-identity">
+        <div class="prof-id-left">
+          <div class="prof-clan-badge" id="prof-clan-badge">CF</div>
+          <div>
+            <div class="prof-player-name" id="prof-name">Player</div>
+            <div class="prof-player-meta">
+              <span class="prof-tag-chip" id="prof-tag">#TAG</span>
+              <span id="prof-clan-text">No Clan</span>
+            </div>
+          </div>
+        </div>
+        <div class="prof-kpis">
+          <div class="prof-kpi"><div class="prof-kpi-k">XP Level</div><div class="prof-kpi-v" id="prof-xp">--</div></div>
+          <div class="prof-kpi"><div class="prof-kpi-k">Trophies</div><div class="prof-kpi-v" id="prof-trophies">--</div></div>
+          <div class="prof-kpi"><div class="prof-kpi-k">War Stars</div><div class="prof-kpi-v" id="prof-wars">--</div></div>
+          <div class="prof-kpi"><div class="prof-kpi-k">Attack Wins</div><div class="prof-kpi-v" id="prof-wins">--</div></div>
+        </div>
+      </div>
+
+      <div class="prof-tabs" role="tablist" aria-label="Village sections">
+        <button type="button" class="prof-tab active" data-tab="home" onclick="profSwitchTab('home')">Home Village</button>
+        <button type="button" class="prof-tab" data-tab="builder" onclick="profSwitchTab('builder')">Builder Base</button>
+        <button type="button" class="prof-tab" data-tab="capital" onclick="profSwitchTab('capital')">Clan Capital</button>
+      </div>
+
+      <!-- HOME VILLAGE TAB -->
+      <div class="prof-pane active" id="prof-pane-home">
+        <div class="prof-inspect-bar" id="prof-inspect-bar">
+          <span class="prof-inspect-name" id="prof-inspect-name">Tap any unit tile to inspect exact level and max cap</span>
+          <span class="prof-inspect-lvl" id="prof-inspect-lvl">Gold badge = Maxed</span>
+        </div>
+        <div class="prof-village-grid">
+          <div class="prof-col">
+            <div class="prof-panel">
+              <div class="prof-th-box">
+                <div class="prof-th-emblem"><span>TOWN HALL</span><strong id="prof-th-num">19</strong></div>
+                <div class="prof-th-sub" id="prof-th-weapon">Home Village</div>
+                <div class="prof-prog-wrap">
+                  <div class="prof-prog-meta"><span>Units Maxed</span><span id="prof-max-ratio">0 / 0</span></div>
+                  <div class="prof-prog-bar"><div class="prof-prog-fill" id="prof-max-fill" style="width:0%"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="prof-panel">
+              <div class="prof-panel-head"><span class="prof-panel-title">Heroes</span><span class="prof-panel-count" id="prof-cnt-heroes">0</span></div>
+              <div class="prof-unit-grid" id="prof-grid-heroes"></div>
+            </div>
+
+            <div class="prof-panel">
+              <div class="prof-panel-head"><span class="prof-panel-title">Pets</span><span class="prof-panel-count" id="prof-cnt-pets">0</span></div>
+              <div class="prof-unit-grid" id="prof-grid-pets"></div>
+            </div>
+
+            <div class="prof-panel">
+              <div class="prof-panel-head"><span class="prof-panel-title">Hero Equipment</span><span class="prof-panel-count" id="prof-cnt-equip">0</span></div>
+              <div class="prof-unit-grid" id="prof-grid-equip"></div>
+            </div>
+          </div>
+
+          <div class="prof-col">
+            <div class="prof-panel">
+              <div class="prof-panel-head"><span class="prof-panel-title">Troops</span><span class="prof-panel-count" id="prof-cnt-troops">0</span></div>
+              <div class="prof-unit-grid" id="prof-grid-troops"></div>
+            </div>
+
+            <div class="prof-panel">
+              <div class="prof-panel-head"><span class="prof-panel-title">Spells</span><span class="prof-panel-count" id="prof-cnt-spells">0</span></div>
+              <div class="prof-unit-grid" id="prof-grid-spells"></div>
+            </div>
+
+            <div class="prof-panel">
+              <div class="prof-panel-head"><span class="prof-panel-title">Siege Machines</span><span class="prof-panel-count" id="prof-cnt-siege">0</span></div>
+              <div class="prof-unit-grid" id="prof-grid-siege"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUILDER BASE TAB -->
+      <div class="prof-pane" id="prof-pane-builder">
+        <div class="prof-village-grid">
+          <div class="prof-col">
+            <div class="prof-panel">
+              <div class="prof-th-box">
+                <div class="prof-th-emblem"><span>BUILDER HALL</span><strong id="prof-bh-num">--</strong></div>
+                <div class="prof-th-sub" id="prof-bh-trophies">Builder Base Trophies: --</div>
+              </div>
+            </div>
+            <div class="prof-panel">
+              <div class="prof-panel-head"><span class="prof-panel-title">Builder Heroes</span><span class="prof-panel-count" id="prof-cnt-bheroes">0</span></div>
+              <div class="prof-unit-grid" id="prof-grid-bheroes"></div>
+            </div>
+          </div>
+          <div class="prof-col">
+            <div class="prof-panel">
+              <div class="prof-panel-head"><span class="prof-panel-title">Builder Base Troops</span><span class="prof-panel-count" id="prof-cnt-btroops">0</span></div>
+              <div class="prof-unit-grid" id="prof-grid-btroops"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CLAN CAPITAL TAB -->
+      <div class="prof-pane" id="prof-pane-capital">
+        <div class="prof-panel">
+          <div class="prof-panel-head"><span class="prof-panel-title">Clan Capital Overview</span><span class="prof-panel-count" id="prof-cap-clan">--</span></div>
+          <div class="mi-stat-grid" style="margin-top:4px">
+            <div class="mi-stat-box"><div class="mi-stat-k">Capital Gold Contributed</div><div class="mi-stat-v" id="prof-cap-gold">--</div><div class="mi-stat-s">Lifetime player contributions</div></div>
+            <div class="mi-stat-box"><div class="mi-stat-k">Current Clan</div><div class="mi-stat-v" id="prof-cap-clanname">No Clan</div><div class="mi-stat-s" id="prof-cap-role">Join a clan to raid</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ══════════ MAGIC ITEM & CWL MEDAL OPTIMIZER ══════════ -->
@@ -2141,7 +2446,7 @@ function navGo(id) {
   document.getElementById('nav-tools-menu').classList.remove('open');
 
   // Highlight plain links
-  ['home','blog','about','policy','support'].forEach(k => {
+  ['home','profile','blog','about','policy','support'].forEach(k => {
     const el = document.getElementById('nl-'+k);
     if(el) el.classList.toggle('active', k === id);
   });
@@ -2167,7 +2472,7 @@ function setActivePage(pageId, navIndex) {
 function showHome() {
   setActivePage('page-home', 0);
   window.scrollTo({top:0, behavior:'smooth'});
-  ['home','blog','about','policy','support'].forEach(k => {
+  ['home','profile','blog','about','policy','support'].forEach(k => {
     const el = document.getElementById('nl-'+k);
     if(el) el.classList.toggle('active', k === 'home');
   });
@@ -2180,6 +2485,7 @@ function showTool(id) {
   window.scrollTo({top:0, behavior:'smooth'});
   if(id === 'equip') eqPopulateEquips();
   if(id === 'magic') miCalc();
+  if(id === 'profile' && window.cfSyncedPlayer) renderPlayerProfile(window.cfSyncedPlayer);
 }
 
 // ── UTILS ──
@@ -2856,6 +3162,7 @@ function applyPlayerProfile(player, fromCache) {
   // Persist tag in cookie (180 days) + full snapshot in localStorage
   if (cleanTag) cfSetCookie('cf_player_tag', cleanTag, 180);
   try { localStorage.setItem('cf_player_data', JSON.stringify(player)); } catch (e) {}
+  if (typeof renderPlayerProfile === 'function') renderPlayerProfile(player);
 
   const inp = document.getElementById('cf-tag-input');
   if (inp && cleanTag) inp.value = cleanTag;
@@ -3328,6 +3635,198 @@ document.addEventListener('DOMContentLoaded', () => {
   setInterval(tickLiveEvents, 1000);
   miCalc();
   hydrateAutoGameData();
+});
+
+
+// ── PLAYER PROFILE OVERVIEW (IN-GAME STYLE) ──
+const PROF_PETS = new Set([
+  'L.A.S.S.I','Electro Owl','Mighty Yak','Unicorn','Frosty','Diggy',
+  'Poison Lizard','Phoenix','Spirit Fox','Angry Jelly','Sneezy'
+]);
+const PROF_SIEGE = new Set([
+  'Wall Wrecker','Battle Blimp','Stone Slammer','Siege Barracks',
+  'Log Launcher','Flame Flinger','Battle Drill','Troop Launcher'
+]);
+const PROF_HERO_ICONS = {
+  'Barbarian King': 'https://static.wikia.nocookie.net/clashofclans/images/e/ec/Barbarian_King_info.png/revision/latest/scale-to-width-down/160',
+  'Archer Queen': 'https://static.wikia.nocookie.net/clashofclans/images/4/4b/Archer_Queen_info.png/revision/latest/scale-to-width-down/160',
+  'Minion Prince': 'https://static.wikia.nocookie.net/vsbattles/images/0/0f/Minion_Prince_Clash_Of_Clans.png/revision/latest/scale-to-width-down/160',
+  'Grand Warden': 'https://static.wikia.nocookie.net/clashofclans/images/3/3a/Grand_Warden_3D_preview.png/revision/latest/scale-to-width-down/160',
+  'Royal Champion': 'https://static.wikia.nocookie.net/clashofclans/images/4/42/Royal_Champion_3D_preview.png/revision/latest/scale-to-width-down/160',
+  'Dragon Duke': 'https://static.wikia.nocookie.net/clashofclans/images/9/95/Dragon_Duke_teaser.png/revision/latest/scale-to-width-down/160'
+};
+
+function profAbbr(name){
+  const parts = String(name || '').replace(/[^A-Za-z0-9 ]/g, '').trim().split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return (parts[0] || '??').slice(0, 3).toUpperCase();
+}
+
+function profIconUrl(name, kind){
+  if (PROF_HERO_ICONS[name]) return PROF_HERO_ICONS[name];
+  const slug = String(name || '').trim().replace(/\s+/g, '_');
+  if (kind === 'spell') return `https://assets.clashk.ing/home-base/spells/${encodeURIComponent(slug)}.png`;
+  if (kind === 'pet') return `https://assets.clashk.ing/home-base/pets/${encodeURIComponent(slug)}.png`;
+  if (kind === 'siege') return `https://assets.clashk.ing/home-base/siege-machines/${encodeURIComponent(slug)}.png`;
+  if (kind === 'equip') return `https://assets.clashk.ing/home-base/hero-equipment/${encodeURIComponent(slug)}.png`;
+  if (kind === 'builder') return `https://assets.clashk.ing/builder-base/troops/${encodeURIComponent(slug)}.png`;
+  return `https://assets.clashk.ing/home-base/troops/${encodeURIComponent(slug)}.png`;
+}
+
+function profInspect(btn, name, level, maxLevel){
+  document.querySelectorAll('.prof-unit-tile.is-selected').forEach(el => el.classList.remove('is-selected'));
+  if (btn) btn.classList.add('is-selected');
+  const nm = document.getElementById('prof-inspect-name');
+  const lv = document.getElementById('prof-inspect-lvl');
+  const rem = Math.max(0, (maxLevel || level) - level);
+  if (nm) nm.textContent = name;
+  if (lv) lv.textContent = rem === 0 ? `Lv ${level} / ${maxLevel || level} · Maxed` : `Lv ${level} / ${maxLevel} · ${rem} level${rem === 1 ? '' : 's'} left`;
+}
+
+function profRenderGrid(containerId, countId, items, kind){
+  const grid = document.getElementById(containerId);
+  const cnt = document.getElementById(countId);
+  if (!grid) return;
+  if (cnt) cnt.textContent = `${items.length}`;
+  if (!items.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;font-size:.8rem;color:var(--muted);padding:6px 0">None unlocked yet</div>';
+    return;
+  }
+  grid.innerHTML = items.map(u => {
+    const isMax = u.maxLevel && u.level >= u.maxLevel;
+    const url = profIconUrl(u.name, kind);
+    const abbr = profAbbr(u.name);
+    const safeName = String(u.name).replace(/'/g, "\'");
+    return `
+      <button type="button" class="prof-unit-tile ${isMax ? 'is-max' : ''}" title="${u.name} (Lv ${u.level}/${u.maxLevel || u.level})" onclick="profInspect(this,'${safeName}',${u.level},${u.maxLevel || u.level})">
+        <img class="prof-unit-img" src="${url}" alt="${u.name}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.classList.add('show')">
+        <span class="prof-unit-abbr">${abbr}</span>
+        <span class="prof-lvl-badge">${u.level}</span>
+      </button>
+    `;
+  }).join('');
+}
+
+function profSwitchTab(tab){
+  document.querySelectorAll('.prof-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.prof-pane').forEach(p => p.classList.toggle('active', p.id === 'prof-pane-' + tab));
+}
+
+function renderPlayerProfile(player){
+  const empty = document.getElementById('prof-empty-state');
+  const content = document.getElementById('prof-content');
+  if (!player || !player.townHallLevel) {
+    if (empty) empty.style.display = 'block';
+    if (content) content.style.display = 'none';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  if (content) content.style.display = 'block';
+
+  const inp = document.getElementById('prof-tag-input');
+  if (inp && player.tag) inp.value = String(player.tag).replace(/^#/, '');
+
+  const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  setTxt('prof-name', player.name || 'Player');
+  setTxt('prof-tag', player.tag || '');
+  setTxt('prof-xp', player.expLevel ?? '--');
+  setTxt('prof-trophies', (player.trophies ?? 0).toLocaleString());
+  setTxt('prof-wars', (player.warStars ?? 0).toLocaleString());
+  setTxt('prof-wins', (player.attackWins ?? 0).toLocaleString());
+
+  const badgeEl = document.getElementById('prof-clan-badge');
+  if (player.clan && player.clan.name) {
+    const roleMap = { leader: 'Leader', coLeader: 'Co-Leader', admin: 'Elder', member: 'Member' };
+    setTxt('prof-clan-text', `${player.clan.name} · ${roleMap[player.role] || player.role || 'Member'}`);
+    if (badgeEl) {
+      badgeEl.innerHTML = player.clan.badgeUrls && player.clan.badgeUrls.medium
+        ? `<img src="${player.clan.badgeUrls.medium}" alt="${player.clan.name}" referrerpolicy="no-referrer">`
+        : profAbbr(player.clan.name);
+    }
+  } else {
+    setTxt('prof-clan-text', 'No Clan');
+    if (badgeEl) badgeEl.textContent = 'TH' + player.townHallLevel;
+  }
+
+  // Town Hall & completion
+  setTxt('prof-th-num', player.townHallLevel);
+  setTxt('prof-th-weapon', player.townHallWeaponLevel ? `Town Hall ${player.townHallLevel} · Weapon Lv ${player.townHallWeaponLevel}` : `Town Hall ${player.townHallLevel}`);
+
+  const allHeroes = Array.isArray(player.heroes) ? player.heroes : [];
+  const homeHeroes = allHeroes.filter(h => h.village === 'home');
+  const builderHeroes = allHeroes.filter(h => h.village === 'builderBase');
+
+  const allTroops = Array.isArray(player.troops) ? player.troops : [];
+  const homeTroopsRaw = allTroops.filter(t => t.village === 'home' && !t.superTroopIsActive && !/^Super /i.test(t.name) && !/^Sneaky /i.test(t.name) && !/^Rocket /i.test(t.name) && !/^Inferno Dragon/i.test(t.name) && !/^Ice Hound/i.test(t.name));
+  const pets = homeTroopsRaw.filter(t => PROF_PETS.has(t.name));
+  const siege = homeTroopsRaw.filter(t => PROF_SIEGE.has(t.name));
+  const troops = homeTroopsRaw.filter(t => !PROF_PETS.has(t.name) && !PROF_SIEGE.has(t.name));
+  const builderTroops = allTroops.filter(t => t.village === 'builderBase');
+
+  const spells = (Array.isArray(player.spells) ? player.spells : []).filter(s => s.village === 'home');
+  const equip = (Array.isArray(player.heroEquipment) ? player.heroEquipment : []).filter(e => !e.village || e.village === 'home');
+
+  const combined = [...homeHeroes, ...pets, ...troops, ...spells, ...siege, ...equip];
+  const maxedCount = combined.filter(u => u.maxLevel && u.level >= u.maxLevel).length;
+  const pct = combined.length ? Math.round((maxedCount / combined.length) * 100) : 0;
+  setTxt('prof-max-ratio', `${maxedCount} / ${combined.length} (${pct}%)`);
+  const fill = document.getElementById('prof-max-fill');
+  if (fill) fill.style.width = pct + '%';
+
+  profRenderGrid('prof-grid-heroes', 'prof-cnt-heroes', homeHeroes, 'hero');
+  profRenderGrid('prof-grid-pets', 'prof-cnt-pets', pets, 'pet');
+  profRenderGrid('prof-grid-equip', 'prof-cnt-equip', equip, 'equip');
+  profRenderGrid('prof-grid-troops', 'prof-cnt-troops', troops, 'troop');
+  profRenderGrid('prof-grid-spells', 'prof-cnt-spells', spells, 'spell');
+  profRenderGrid('prof-grid-siege', 'prof-cnt-siege', siege, 'siege');
+
+  // Builder Base
+  setTxt('prof-bh-num', player.builderHallLevel ?? '--');
+  setTxt('prof-bh-trophies', `Builder Trophies: ${(player.builderBaseTrophies ?? 0).toLocaleString()} (Best ${(player.bestBuilderBaseTrophies ?? 0).toLocaleString()})`);
+  profRenderGrid('prof-grid-bheroes', 'prof-cnt-bheroes', builderHeroes, 'builder');
+  profRenderGrid('prof-grid-btroops', 'prof-cnt-btroops', builderTroops, 'builder');
+
+  // Clan Capital
+  setTxt('prof-cap-gold', (player.clanCapitalContributions ?? 0).toLocaleString());
+  setTxt('prof-cap-clan', player.clan ? player.clan.tag : 'No Clan');
+  setTxt('prof-cap-clanname', player.clan ? player.clan.name : 'No Clan');
+  setTxt('prof-cap-role', player.clan ? `Clan Level ${player.clan.clanLevel || '--'}` : 'Join a clan to contribute');
+}
+
+async function profFetchFromInput(){
+  const inp = document.getElementById('prof-tag-input');
+  const st = document.getElementById('prof-status');
+  const btn = document.getElementById('prof-fetch-btn');
+  const raw = inp ? inp.value.trim() : '';
+  const clean = raw.replace(/^#/, '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (clean.length < 3) {
+    if (st) { st.textContent = 'Enter a valid player tag (for example #2PP).'; st.className = 'prof-status show err'; }
+    return;
+  }
+  if (btn) { btn.disabled = true; btn.textContent = 'Loading...'; }
+  if (st) { st.textContent = `Fetching #${clean} from Clash of Clans API...`; st.className = 'prof-status show'; }
+  try {
+    const res = await fetch('/api/player?tag=' + encodeURIComponent(clean));
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.townHallLevel) {
+      throw new Error(data.error || 'Could not load player profile right now.');
+    }
+    if (typeof applyPlayerProfile === 'function') applyPlayerProfile(data, false);
+    else renderPlayerProfile(data);
+    if (st) { st.textContent = `Loaded ${data.name} (${data.tag}) · Town Hall ${data.townHallLevel}`; st.className = 'prof-status show ok'; }
+  } catch (err) {
+    if (st) { st.textContent = err.message || 'Unable to fetch player profile.'; st.className = 'prof-status show err'; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Load Profile'; }
+  }
+}
+
+// Auto-hydrate Profile page from cached village on load
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const cached = JSON.parse(localStorage.getItem('cf_player_data') || 'null');
+    if (cached && cached.townHallLevel) renderPlayerProfile(cached);
+  } catch (_) {}
 });
 
 </script>
