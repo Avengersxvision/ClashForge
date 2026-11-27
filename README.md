@@ -1,50 +1,33 @@
-# ClashForge
+# ClashForge — Town Hall 19 Clash of Clans Toolkit
 
-An unofficial, mobile-first Clash of Clans fan toolkit built for fast, no-login upgrade planning. Enter your Player Tag once to auto-fill your Town Hall, Hero levels, and Hero Equipment across calculators and guides.
+ClashForge is a fast, mobile-friendly Clash of Clans upgrade planner and calculator suite with live Player Tag sync, real-time event countdowns, and automated game data updates.
 
-## Core Tools (7)
+## Core Tools (8 Practical Utilities)
+1. **Build Timer** — Speed boost calculator with Gold Pass, Builder Potion, and live completion timing.
+2. **Hero Tracker** — Exact TH19 per-level costs and upgrade times for all 6 heroes (BK 115, AQ 115, MP 100, GW 90, RC 60, DD 30).
+3. **Magic Item & CWL Medal Optimizer** — Live break-even calculator comparing Hammer of Building vs Builder Potions vs Books across your active builders, Gold Pass boost, and Hammer Jam.
+4. **Equip & Ores** — Full 6-hero equipment upgrade tracker for Shiny, Glowy, and Starry Ore.
+5. **Wall Calc** — Exact Level 1–20 wall costs and TH2–TH19 wall counts (350 walls at TH19).
+6. **Gem Calc** — Instant gem cost breakdown for remaining build time and resources.
+7. **Farming Calc** — Raid loot and hourly farming efficiency planner.
+8. **Base Maxing Guide** — Prioritized upgrade roadmap for Town Hall 19.
 
-### Calculators
+## Automated Backend Data Sync (Zero-Maintenance Updates)
+ClashForge updates itself automatically whenever Supercell releases a new Town Hall, hero level, or event schedule using two layers:
 
-* **Build Timer**: Speed boost calculator with remaining booster tracking.
+1. **Live Vercel Edge API (`/api/gamedata.js`)**:
+   - Fetches latest game caps from ClashKing (`assets.clashk.ing/static_data.json`) and live Raid Weekend / Season dates (`api.clashk.ing/v2/dates`).
+   - Cached at Vercel's Edge CDN for 6 hours (`s-maxage=21600`) with automatic fallback to `data/gamedata.json`.
+   - Works out of the box on Vercel with **zero extra environment variables**.
 
-* **Hero Tracker**: Dark Elixir and Elixir cost calculator to max any hero for your Town Hall (TH7 to TH18).
+2. **Weekly GitHub Actions Workflow (`.github/workflows/sync-coc-data.yml`)**:
+   - Runs every Monday at `06:00 UTC` (or anytime via **Actions → Run workflow**).
+   - Runs `scripts/sync-coc-data.mjs`, validates that Town Hall and hero levels never shrink, and commits `data/gamedata.json` automatically only when Supercell ships new levels — triggering Vercel to auto-redeploy.
 
-* **Equip & Ores**: Shiny, Glowy, and Starry Ore calculator for Hero Equipment levels.
+## Player Tag Sync Setup (Vercel)
+Add these Environment Variables in **Vercel → Project Settings → Environment Variables**:
+- `COC_API_KEY`: Your official token from [developer.clashofclans.com](https://developer.clashofclans.com/) (whitelist RoyaleAPI proxy IP `45.79.218.79`).
+- `COC_PROXY_URL`: `https://cocproxy.royaleapi.dev/v1` (plain URL only, no markdown brackets).
 
-* **Wall Calc**: Total Gold or Elixir needed to max every wall at your Town Hall.
-
-* **Gem Calc**: Exact gem cost to finish any active build or lab timer.
-
-* **Farming Calc**: Estimate how many raids you need to fund your next upgrade.
-
-### Guides
-
-* **Base Maxing Guide**: Priority upgrade checklist per Town Hall aligned to Chief's Journey.
-
-## Key Features
-
-* **1-Tap Player Tag Sync**: Connects through `/api/player?tag=...` (tag only, no password or Supercell ID login) and saves your tag in a browser cookie for instant auto-fill on return visits.
-
-* **Mobile-First Navigation**: Compact top bar with ClashForge logo, slide-down drawer menu, and sticky thumb-friendly bottom navigation bar for phones, plus a responsive desktop layout.
-
-* **Server-Side API Security**: Your Clash of Clans API key stays inside Vercel environment variables and is never exposed in client-side HTML.
-
-## Project Structure
-
-```
-.
-├── index.html                    # Complete single-page app (UI, 7 tools, blog, cookie tag sync)
-├── favicon.png                   # ClashForge browser favicon
-├── api/
-│   └── player.js                 # Vercel serverless proxy for the official Clash of Clans API
-├── ads.txt                       # Google AdSense verification
-├── package.json                  # ES module config for Vercel serverless functions
-└── googlebfdcd7435323eb9e.html   # Google Search Console verification
-
-```
-
-
-## Disclaimer
-
-ClashForge is an unofficial fan toolkit and is not affiliated with, endorsed by, sponsored by, or specifically approved by Supercell Oy. Clash of Clans is a trademark of Supercell Oy. Calculated values are community-based estimates and may vary in-game.
+## License & Disclaimer
+This material is unofficial and is not endorsed by Supercell.

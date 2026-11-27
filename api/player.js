@@ -16,7 +16,6 @@ export default async function handler(req, res) {
 
   let apiBase = (process.env.COC_PROXY_URL || 'https://api.clashofclans.com/v1').trim().replace(/\/+$/, '');
   if (!apiBase.endsWith('/v1')) apiBase += '/v1';
-  const usingProxy = !apiBase.includes('api.clashofclans.com');
   const url = `${apiBase}/players/%23${encodeURIComponent(cleanTag)}`;
 
   const keys = [process.env.coc_api, process.env.coc_api_2]
@@ -24,7 +23,7 @@ export default async function handler(req, res) {
     .filter(Boolean);
 
   if (keys.length === 0) {
-    return res.status(500).json({ error: 'Server API configuration missing', usingProxy });
+    return res.status(500).json({ error: 'Server API configuration missing' });
   }
 
   let lastReason = 'Unknown error';
@@ -43,11 +42,7 @@ export default async function handler(req, res) {
         return res.status(404).json({ error: 'Player tag not found. Check your tag in-game.' });
       }
       if (!cocRes.ok) {
-        return res.status(cocRes.status).json({
-          error: data.message || 'Upstream API error',
-          reason: data.reason || cocRes.status,
-          usingProxy,
-        });
+        return res.status(cocRes.status).json({ error: data.message || 'Unable to fetch player data right now' });
       }
       return res.status(200).json(data);
     } catch (err) {
@@ -55,9 +50,5 @@ export default async function handler(req, res) {
     }
   }
 
-  return res.status(503).json({
-    error: 'Clash of Clans API unavailable',
-    reason: lastReason,
-    usingProxy,
-  });
+  return res.status(503).json({ error: 'Clash of Clans API unavailable', reason: lastReason });
 }

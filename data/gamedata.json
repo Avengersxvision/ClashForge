@@ -1,0 +1,15 @@
+{
+  "updatedAt": "2026-11-27T12:00:00Z",
+  "source": "ClashKingAssets + Official TH19 Release Notes",
+  "maxTownHall": 19,
+  "wallMaxLevel": 20,
+  "wallCountAtMaxTh": 350,
+  "heroMaxLevels": {
+    "bk": 115,
+    "aq": 115,
+    "mp": 100,
+    "gw": 90,
+    "rc": 60,
+    "dd": 30
+  }
+}
